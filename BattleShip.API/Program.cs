@@ -16,29 +16,38 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/game", () =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    var game = new Game(); // Créer une instance du jeu
+
+    return game;
 })
-.WithName("GetWeatherForecast")
+.WithName("GetGame")
 .WithOpenApi();
 
-app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+app.MapGet("/playerGrid", () =>
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+    var game = new Game(); // Créer une instance du jeu
+
+    var playerGrid = game.PlayerGrid;
+    var gridData = new List<List<string>>();
+    for (int i = 0; i < 10; i++)
+    {
+        var row = new List<string>();
+        for (int j = 0; j < 10; j++)
+        {
+            //row.Add(playerGrid[i, j]);
+            row.Add("\0");
+        }
+        gridData.Add(row);
+    }
+    return Results.Ok(gridData);
+})
+.WithName("GetPlayerGrid")
+.WithOpenApi();
+
+
+
+app.Run();

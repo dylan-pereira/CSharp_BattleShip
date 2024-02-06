@@ -1,7 +1,6 @@
 public class Grid
 {
-    private char[,] grid;
-
+    private char[,] grid { get; }
     public Grid()
     {
         grid = new char[10, 10];
@@ -14,7 +13,7 @@ public class Grid
         {
             for (int j = 0; j < 10; j++)
             {
-                grid[i, j] = '\0';
+                grid[i, j] = 'X';
             }
         }
     }
@@ -34,7 +33,7 @@ public class Grid
             {
                 int newX = horizontal ? x + i : x;
                 int newY = horizontal ? y : y + i;
-                if (newX >= 10 || newY >= 10 || grid[newX, newY] != '\0')
+                if (newX >= 10 || newY >= 10 || grid[newX, newY] != 'X')
                 {
                     validPlacement = false;
                     x = rand.Next(0, 10);
@@ -68,7 +67,7 @@ public class Grid
 
     public void ReceiveAttack(int x, int y)
     {
-        if (grid[x, y] != '\0')
+        if (grid[x, y] != 'X')
         {
             Console.WriteLine("Touché !");
             grid[x, y] = 'X'; // Marquer la case comme touchée
