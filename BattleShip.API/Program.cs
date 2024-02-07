@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,38 +18,32 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+var game = new Game();
+
+app.MapGet("/newgame", () =>
+{
+    game = new Game();
+    return Results.Ok(new { gameId = game.Id, playerShips = game.PlayerGrid.Ships });
+})
+.WithName("GetNewGame")
+.WithOpenApi();
 
 app.MapGet("/game", () =>
 {
-    var game = new Game(); // Créer une instance du jeu
-
-    return game;
+    Console.WriteLine("Player Grid: ");
+    game.DisplayPlayerGrid();
+    Console.WriteLine("Computer Grid: ");
+    game.DisplayComputerGrid();
+    return Results.Ok(new { gameId = game.Id, playerShips = game.PlayerGrid.Ships });
 })
 .WithName("GetGame")
 .WithOpenApi();
 
-
-app.MapGet("/playerGrid", () =>
+app.MapPost("/attack", ([FromBody] AttackRequest attackRequest) =>
 {
-    var game = new Game(); // Créer une instance du jeu
-
-    var playerGrid = game.PlayerGrid;
-    var gridData = new List<List<string>>();
-    for (int i = 0; i < 10; i++)
-    {
-        var row = new List<string>();
-        for (int j = 0; j < 10; j++)
-        {
-            //row.Add(playerGrid[i, j]);
-            row.Add("\0");
-        }
-        gridData.Add(row);
-    }
-    return Results.Ok(gridData);
+    return Results.Ok(game.PlayerAttack(attackRequest.X, attackRequest.Y));
 })
-.WithName("GetPlayerGrid")
+.WithName("PostAttack")
 .WithOpenApi();
-
-
 
 app.Run();

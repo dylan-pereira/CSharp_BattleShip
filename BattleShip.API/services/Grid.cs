@@ -1,9 +1,11 @@
 public class Grid
 {
     private char[,] grid { get; }
+    public List<Ship> Ships { get; }
     public Grid()
     {
         grid = new char[10, 10];
+        Ships = new List<Ship>();
         InitializeGrid();
     }
 
@@ -13,7 +15,7 @@ public class Grid
         {
             for (int j = 0; j < 10; j++)
             {
-                grid[i, j] = 'X';
+                grid[i, j] = '\0';
             }
         }
     }
@@ -33,7 +35,7 @@ public class Grid
             {
                 int newX = horizontal ? x + i : x;
                 int newY = horizontal ? y : y + i;
-                if (newX >= 10 || newY >= 10 || grid[newX, newY] != 'X')
+                if (newX >= 10 || newY >= 10 || grid[newX, newY] != '\0')
                 {
                     validPlacement = false;
                     x = rand.Next(0, 10);
@@ -50,7 +52,9 @@ public class Grid
             int newX = horizontal ? x + i : x;
             int newY = horizontal ? y : y + i;
             grid[newX, newY] = ship.Letter[0];
+            ship.Coordinates.Add(new Coordinates { X = newX, Y = newY });
         }
+        Ships.Add(ship);
     }
 
     public void Display()
@@ -65,9 +69,9 @@ public class Grid
         }
     }
 
-    public void ReceiveAttack(int x, int y)
+    public char ReceiveAttack(int x, int y)
     {
-        if (grid[x, y] != 'X')
+        if (grid[x, y] != '\0' && grid[x, y] != 'O')
         {
             Console.WriteLine("Touché !");
             grid[x, y] = 'X'; // Marquer la case comme touchée
@@ -75,6 +79,31 @@ public class Grid
         else
         {
             Console.WriteLine("Dans l'eau.");
+            grid[x, y] = 'O';
         }
+        return grid[x, y];
+    }
+
+    public bool isOver()
+    {
+        int totalShipSize = 0;
+        foreach (var ship in Ships)
+        {
+            totalShipSize += ship.Size;
+        }
+
+        int countX = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                if (grid[i, j] == 'X')
+                {
+                    countX++;
+                }
+            }
+        }
+        Console.WriteLine(countX);
+        return countX == totalShipSize;
     }
 }
