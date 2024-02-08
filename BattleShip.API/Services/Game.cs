@@ -3,15 +3,15 @@ public class Game
 {
     public Guid Id { get; set; }
     public Grid PlayerGrid { get; private set; }
-    public Grid ComputerGrid { get; private set; }
+    public Grid OpponentGrid { get; private set; }
     public string? WinnerName { get; set; } = null;
 
     public Game()
     {
         Id = Guid.NewGuid();
         PlayerGrid = new Grid("Joueur");
-        ComputerGrid = new Grid("Ordinateur");
-        PlaceShipsGrids(ComputerGrid);
+        OpponentGrid = new Grid("Ordinateur");
+        PlaceShipsGrids(OpponentGrid);
         PlaceShipsGrids(PlayerGrid);
     }
 
@@ -30,7 +30,7 @@ public class Game
     public AttackResponse PlayerAttackIA(int x, int y)
     {
 
-        char playerAttackResponse = Attack(ComputerGrid, x, y);
+        char playerAttackResponse = Attack(OpponentGrid, x, y);
         char computerAttackResponse = '\0';
 
         if (playerAttackResponse != '\0')
@@ -66,14 +66,14 @@ public class Game
             char attackResponse = grid.ReceiveAttack(x, y);
             if (grid.isOver())
             {
-                if (grid == ComputerGrid)
+                if (grid == OpponentGrid)
                 {
 
                     WinnerName = PlayerGrid.Name;
                 }
                 else if (grid == PlayerGrid)
                 {
-                    WinnerName = ComputerGrid.Name;
+                    WinnerName = OpponentGrid.Name;
                 }
             }
             return attackResponse;
@@ -85,14 +85,14 @@ public class Game
     public void RestartGame()
     {
         string? lastPlayerGridName = PlayerGrid.Name;
-        string? lastComputerGridName = ComputerGrid.Name;
-        if (lastPlayerGridName != null && lastComputerGridName != null)
+        string? lastOpponentGridName = OpponentGrid.Name;
+        if (lastPlayerGridName != null && lastOpponentGridName != null)
         {
             PlayerGrid = new Grid(lastPlayerGridName);
-            ComputerGrid = new Grid(lastComputerGridName);
+            OpponentGrid = new Grid(lastOpponentGridName);
         }
 
-        PlaceShipsGrids(ComputerGrid);
+        PlaceShipsGrids(OpponentGrid);
         PlaceShipsGrids(PlayerGrid);
     }
 }

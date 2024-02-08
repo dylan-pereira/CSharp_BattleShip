@@ -2,7 +2,7 @@ public class GameState
 {
     public Guid Id { get; set; } = Guid.Empty;
     public char[,] PlayerGrid { get; set; }
-    public bool?[,] ComputerGrid { get; set; }
+    public bool?[,] OpponentGrid { get; set; }
     public string? WinnerName { get; set; } = null;
 
 
@@ -10,7 +10,7 @@ public class GameState
     public GameState()
     {
         PlayerGrid = new char[10, 10];
-        ComputerGrid = new bool?[10, 10];
+        OpponentGrid = new bool?[10, 10];
     }
 
     public void ResetGame()
@@ -31,7 +31,7 @@ public class GameState
         {
             for (int j = 0; j < 10; j++)
             {
-                ComputerGrid[i, j] = null;
+                OpponentGrid[i, j] = null;
             }
         }
 

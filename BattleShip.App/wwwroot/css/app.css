@@ -105,10 +105,10 @@ table {
     border-width: 1px;
     border-style: solid;
     border-color: white;
-    
+    color:white;
     border-spacing: 0px;
-    background-image: url('/images/water.png');
-    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
 }
 
 #game{
@@ -118,7 +118,7 @@ table {
 }
 
 .notshow{
-    visibility : hidden;
+    display : none !important;
 }
 
 #result{
@@ -153,6 +153,16 @@ table {
 #hud{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
+    width: fit-content;
+    border-radius: 4px;
+}
+
+#hudcontainer{
+    display: flex;
+    justify-content: center;
 }
 
 #button-group{
@@ -162,4 +172,25 @@ table {
 
 #button-group > button{
     margin: 10px;
+}
+
+.stats{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+
+.stats > div {
+    align-items: end;
+    display: flex;
+}
+
+body {
+    background-image: url('/images/battleship_background.jpg');
+    background-size: cover;
+}
+#logo{
+    width: 100px;
+    height: 100px;
 }

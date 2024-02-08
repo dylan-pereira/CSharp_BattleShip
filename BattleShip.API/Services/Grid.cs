@@ -75,12 +75,16 @@ public class Grid
 
     public bool isOver()
     {
-        int totalShipSize = 0;
-        foreach (var ship in Ships)
-        {
-            totalShipSize += ship.Size;
-        }
+        return getNumberOfDestroyedShip() == getTotalShipSize();
+    }
 
+    public bool isAlreadyHitted(int x, int y)
+    {
+        return grid[x, y] == 'X' || grid[x, y] == 'O';
+    }
+
+    public int getNumberOfDestroyedShip()
+    {
         int countX = 0;
         for (int i = 0; i < 10; i++)
         {
@@ -92,11 +96,16 @@ public class Grid
                 }
             }
         }
-        return countX == totalShipSize;
+        return countX;
     }
 
-    public bool isAlreadyHitted(int x, int y)
+    public int getTotalShipSize()
     {
-        return grid[x, y] == 'X' || grid[x, y] == 'O';
+        int totalShipSize = 0;
+        foreach (var ship in Ships)
+        {
+            totalShipSize += ship.Size;
+        }
+        return totalShipSize;
     }
 }
