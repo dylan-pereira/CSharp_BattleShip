@@ -1,7 +1,142 @@
 ﻿@page "/"
+@inject IGameService GameService
+@inject GameState GameState
+@inject HttpClient HttpClient
 
-<PageTitle>Home</PageTitle>
+<PageTitle>BattleShip</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>BattleShip</h1>
+<div id="hud">
+    <div id="button-group">
+        <button class="button" @onclick="StartNewGame">Nouvelle Partie</button>
+        <button class="button" @onclick="RandomPlay">Jouer aléatoirement</button>
+    </div>
+    <div id="result" class="@(GameState.WinnerName != null ? "": "notshow")">
 
-Welcome to your new app.
+        <text> @GameState.WinnerName</text>&nbsp;a remporté la partie !
+    </div>
+</div>
+<div id="game" class="@(GameState.Id != Guid.Empty ? "": "notshow")">
+    <div>
+        <h3>Joueur 1</h3>
+        <table>
+            @for (int i = 0; i < 10; i++)
+            {
+                <tr>
+                    @for (int j = 0; j < 10; j++)
+                    {
+                        <td>
+
+                            @if (GameState.PlayerGrid[i, j] == 'X')
+                            {
+                                <img src="images/hit.png" alt="Hit" />
+                            }
+                            else if (GameState.PlayerGrid[i, j] == 'O')
+                            {
+                                <img src="images/miss.png" alt="Miss" />
+                            }
+                            else if (GameState.PlayerGrid[i, j] != '\0')
+                            {
+                                <text>@GameState.PlayerGrid[i, j]</text>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+    <div>
+        <h3>Joueur 2</h3>
+        <table>
+            @for (int i = 0; i < 10; i++)
+            {
+                <tr>
+                    @for (int j = 0; j < 10; j++)
+                    {
+                        int ii = i;
+                        int jj = j;
+                        <td class="clickable" @onclick="() => AttackOpponent(ii, jj)">
+                            @if (GameState.ComputerGrid[i, j] == true)
+                            {
+                                <img src="images/hit.png" alt="Hit" />
+                            }
+                            else if (GameState.ComputerGrid[i, j] == false)
+                            {
+                                <img src="images/miss.png" alt="Miss" />
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+@code {
+    private async Task StartNewGame()
+    {
+        var gameData = await GameService.StartNewGame();
+        if (gameData != null)
+        {
+            GameState.ResetGame();
+
+            GameState.Id = gameData.gameId;
+
+            if (gameData.playerShips != null)
+            {
+                foreach (var ship in gameData.playerShips)
+                {
+                    foreach (var coordinate in ship.Coordinates)
+                    {
+                        if (ship.Letter != null)
+                            GameState.PlayerGrid[coordinate.X, coordinate.Y] = ship.Letter[0];
+                    }
+                }
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async void RandomPlay()
+    {
+        while (GameState.WinnerName == null)
+        {
+            Console.WriteLine(GameState.WinnerName);
+
+            Random rand = new Random();
+            int x = rand.Next(0, 10);
+            int y = rand.Next(0, 10);
+            await AttackOpponent(x, y);
+        }
+        StateHasChanged();
+    }
+
+    private async Task AttackOpponent(int x, int y)
+    {
+        if (GameState.ComputerGrid[x, y] == null && GameState.WinnerName == null)
+        {
+            var gameData = await GameService.AttackOpponent(GameState.Id, x, y);
+            if (gameData != null)
+            {
+
+                if (gameData.PlayerAttackResponse == 'O')
+                {
+                    GameState.ComputerGrid[x, y] = false;
+                }
+                else if (gameData.PlayerAttackResponse == 'X')
+                {
+                    GameState.ComputerGrid[x, y] = true;
+                }
+                if (gameData.Winner != null)
+                {
+                    GameState.WinnerName = gameData.Winner;
+                    Console.WriteLine($"Winner ! {gameData.Winner}");
+                }
+                if (gameData.ComputerAttackCoordinates != null && gameData.ComputerAttackCoordinates.X != -1 &&
+                gameData.ComputerAttackCoordinates.Y != -1)
+                    GameState.PlayerGrid[gameData.ComputerAttackCoordinates.X, gameData.ComputerAttackCoordinates.Y] =
+                    gameData.ComputerAttackResponse;
+                StateHasChanged();
+            }
+        }
+    }
+}

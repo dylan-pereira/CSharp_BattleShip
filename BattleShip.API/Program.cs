@@ -2,6 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -18,7 +28,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var game = new Game();
+Game game = new Game();
+app.UseCors(c => { c.AllowAnyMethod(); c.AllowAnyOrigin(); c.AllowAnyHeader(); });
+
 
 app.MapGet("/newgame", () =>
 {
@@ -28,20 +40,9 @@ app.MapGet("/newgame", () =>
 .WithName("GetNewGame")
 .WithOpenApi();
 
-app.MapGet("/game", () =>
-{
-    Console.WriteLine("Player Grid: ");
-    game.DisplayPlayerGrid();
-    Console.WriteLine("Computer Grid: ");
-    game.DisplayComputerGrid();
-    return Results.Ok(new { gameId = game.Id, playerShips = game.PlayerGrid.Ships });
-})
-.WithName("GetGame")
-.WithOpenApi();
-
 app.MapPost("/attack", ([FromBody] AttackRequest attackRequest) =>
 {
-    return Results.Ok(game.PlayerAttack(attackRequest.X, attackRequest.Y));
+    return Results.Ok(game.PlayerAttackIA(attackRequest.X, attackRequest.Y));
 })
 .WithName("PostAttack")
 .WithOpenApi();

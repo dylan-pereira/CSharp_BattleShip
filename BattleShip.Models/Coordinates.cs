@@ -1,3 +1,4 @@
+namespace BattleShip.Models;
 public class Coordinates
 {
     public int X { get; set; }

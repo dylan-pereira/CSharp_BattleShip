@@ -1,11 +1,14 @@
+using BattleShip.Models;
 public class Grid
 {
-    private char[,] grid { get; }
+    public char[,] grid { get; }
+    public string? Name { get; set; }
     public List<Ship> Ships { get; }
-    public Grid()
+    public Grid(string name)
     {
         grid = new char[10, 10];
         Ships = new List<Ship>();
+        Name = name;
         InitializeGrid();
     }
 
@@ -57,28 +60,14 @@ public class Grid
         Ships.Add(ship);
     }
 
-    public void Display()
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            for (int j = 0; j < 10; j++)
-            {
-                Console.Write(grid[i, j] + " ");
-            }
-            Console.WriteLine();
-        }
-    }
-
     public char ReceiveAttack(int x, int y)
     {
         if (grid[x, y] != '\0' && grid[x, y] != 'O')
         {
-            Console.WriteLine("Touché !");
             grid[x, y] = 'X'; // Marquer la case comme touchée
         }
         else
         {
-            Console.WriteLine("Dans l'eau.");
             grid[x, y] = 'O';
         }
         return grid[x, y];
@@ -103,7 +92,11 @@ public class Grid
                 }
             }
         }
-        Console.WriteLine(countX);
         return countX == totalShipSize;
+    }
+
+    public bool isAlreadyHitted(int x, int y)
+    {
+        return grid[x, y] == 'X' || grid[x, y] == 'O';
     }
 }
