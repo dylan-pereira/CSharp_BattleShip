@@ -194,3 +194,22 @@ body {
     width: 100px;
     height: 100px;
 }
+
+.attackImage{
+    z-index: 2;
+    position: relative;
+}
+
+.shipImage{
+    z-index: 1;
+    position: absolute;
+}
+
+.notHorizontal{
+        transform: rotate(90deg) translate(50%, -20px);
+        margin-left: 0px !important;
+}
+
+.notHorizontalImage{
+    margin-left: -15%;
+}

@@ -1,14 +1,12 @@
 using BattleShip.Models;
 public class Grid
 {
-    public char[,] grid { get; }
-    public string? Name { get; set; }
-    public List<Ship> Ships { get; }
-    public Grid(string name)
+    public int Size { get; set; } = 10;
+    public char[,] GridState { get; set; }
+    public List<Ship> Ships { get; } = new List<Ship>();
+    public Grid()
     {
-        grid = new char[10, 10];
-        Ships = new List<Ship>();
-        Name = name;
+        GridState = new char[Size, Size];
         InitializeGrid();
     }
 
@@ -18,7 +16,7 @@ public class Grid
         {
             for (int j = 0; j < 10; j++)
             {
-                grid[i, j] = '\0';
+                GridState[i, j] = '\0';
             }
         }
     }
@@ -38,7 +36,7 @@ public class Grid
             {
                 int newX = horizontal ? x + i : x;
                 int newY = horizontal ? y : y + i;
-                if (newX >= 10 || newY >= 10 || grid[newX, newY] != '\0')
+                if (newX >= 10 || newY >= 10 || GridState[newX, newY] != '\0')
                 {
                     validPlacement = false;
                     x = rand.Next(0, 10);
@@ -54,23 +52,24 @@ public class Grid
         {
             int newX = horizontal ? x + i : x;
             int newY = horizontal ? y : y + i;
-            grid[newX, newY] = ship.Letter[0];
+            GridState[newX, newY] = ship.Letter[0];
             ship.Coordinates.Add(new Coordinates { X = newX, Y = newY });
+            ship.Horizontal = horizontal;
         }
         Ships.Add(ship);
     }
 
     public char ReceiveAttack(int x, int y)
     {
-        if (grid[x, y] != '\0' && grid[x, y] != 'O')
+        if (GridState[x, y] != '\0' && GridState[x, y] != 'O')
         {
-            grid[x, y] = 'X'; // Marquer la case comme touchée
+            GridState[x, y] = 'X'; // Marquer la case comme touchée
         }
         else
         {
-            grid[x, y] = 'O';
+            GridState[x, y] = 'O';
         }
-        return grid[x, y];
+        return GridState[x, y];
     }
 
     public bool isOver()
@@ -80,7 +79,7 @@ public class Grid
 
     public bool isAlreadyHitted(int x, int y)
     {
-        return grid[x, y] == 'X' || grid[x, y] == 'O';
+        return GridState[x, y] == 'X' || GridState[x, y] == 'O';
     }
 
     public int getNumberOfDestroyedShip()
@@ -90,7 +89,7 @@ public class Grid
         {
             for (int j = 0; j < 10; j++)
             {
-                if (grid[i, j] == 'X')
+                if (GridState[i, j] == 'X')
                 {
                     countX++;
                 }
@@ -108,4 +107,18 @@ public class Grid
         }
         return totalShipSize;
     }
+
+    public void Display()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                Console.Write(GridState[i, j] + " ");
+            }
+            Console.WriteLine();
+        }
+    }
+
+
 }

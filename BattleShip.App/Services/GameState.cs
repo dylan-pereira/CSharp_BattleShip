@@ -1,3 +1,5 @@
+using BattleShip.Models;
+
 public class GameState
 {
     public Guid Id { get; set; } = Guid.Empty;
@@ -5,7 +7,9 @@ public class GameState
     public bool?[,] OpponentGrid { get; set; }
     public string? WinnerName { get; set; } = null;
 
+    public List<Coordinates>? RealPlayerGrid { get; set; }
 
+    public List<Ship>? PlayerShips { get; set; }
 
     public GameState()
     {

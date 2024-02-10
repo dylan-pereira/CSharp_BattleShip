@@ -32,27 +32,36 @@
                 <tr>
                     @for (int j = 0; j < 10; j++)
                     {
-                        @if (j == 3)
-                        {
-
-                        }
                         <td>
-                    @if (GameState.PlayerGrid[i, j] == 'X')
+                            @if (GameState.RealPlayerGrid != null)
                             {
-                                <img src="images/hit.png" alt="Hit" />
+                                @foreach (var ship in GameState.PlayerShips)
+                                {
+                                    if (ship.getFirstCoordinates().X == i && ship.getFirstCoordinates().Y == j)
+                                    {
+                                        <div style="position:relative" class=" @(ship.Horizontal ? "notHorizontal" : "" )"><img
+                                                class=" @(ship.Horizontal ? "notHorizontalImage shipImage" : "shipImage" )"
+                                                style="width: @(50 * ship.Size)px;" src="@ship.ImagePath" alt="Ship" />
+                                        </div>
+                                    }
+                                }
+                            }
+
+                            @if (GameState.PlayerGrid[i, j] == 'X')
+                            {
+                                <img class="attackImage" src="images/hit.png" alt="Hit" />
                             }
                             else if (GameState.PlayerGrid[i, j] == 'O')
                             {
-                                <img src="images/miss.png" alt="Miss" />
+                                <img class="attackImage" src="images/miss.png" alt="Miss" />
                             }
                             else if (GameState.PlayerGrid[i, j] != '\0')
                             {
-                                <text>@GameState.PlayerGrid[i, j]</text>
+                                //TODO: delete this
+                                <text>.</text>
+
                             }
                         </td>
-                        @if (j == 3)
-                        {
-                        }
 
                     }
 
@@ -101,9 +110,11 @@
 
             GameState.Id = gameData.gameId;
 
-            if (gameData.playerShips != null)
+            GameState.RealPlayerGrid = gameData.RealPlayerGrid;
+            GameState.PlayerShips = gameData.PlayerShips;
+            if (GameState.PlayerShips != null)
             {
-                foreach (var ship in gameData.playerShips)
+                foreach (var ship in GameState.PlayerShips)
                 {
                     foreach (var coordinate in ship.Coordinates)
                     {
@@ -149,12 +160,18 @@
                 if (gameData.Winner != null)
                 {
                     GameState.WinnerName = gameData.Winner;
-                    Console.WriteLine($"Winner ! {gameData.Winner}");
                 }
-                if (gameData.ComputerAttackCoordinates != null && gameData.ComputerAttackCoordinates.X != -1 &&
+                if (gameData.OpponentAttackResponseToReplace != null && gameData.OpponentAttackResponseToReplace.AttackedCoordinates !=
+                null)
+                {
+                    GameState.PlayerGrid[gameData.OpponentAttackResponseToReplace.AttackedCoordinates.X,
+                    gameData.OpponentAttackResponseToReplace.AttackedCoordinates.Y] =
+                    gameData.OpponentAttackResponseToReplace.AttackResult;
+                }
+                /*if (gameData.ComputerAttackCoordinates != null && gameData.ComputerAttackCoordinates.X != -1 &&
                 gameData.ComputerAttackCoordinates.Y != -1)
-                    GameState.PlayerGrid[gameData.ComputerAttackCoordinates.X, gameData.ComputerAttackCoordinates.Y] =
-                    gameData.ComputerAttackResponse;
+                GameState.PlayerGrid[gameData.ComputerAttackCoordinates.X, gameData.ComputerAttackCoordinates.Y] =
+                gameData.ComputerAttackResponse;*/
                 StateHasChanged();
             }
         }

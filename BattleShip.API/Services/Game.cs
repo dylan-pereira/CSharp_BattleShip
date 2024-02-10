@@ -4,13 +4,17 @@ public class Game
     public Guid Id { get; set; }
     public Grid PlayerGrid { get; private set; }
     public Grid OpponentGrid { get; private set; }
-    public string? WinnerName { get; set; } = null;
+    public Player? Winner { get; set; } = null;
+
+    public Player Player { get; set; } = new Player("Player");
+
+    public Player Opponent { get; set; } = new PlayerIA("IA");
 
     public Game()
     {
         Id = Guid.NewGuid();
-        PlayerGrid = new Grid("Joueur");
-        OpponentGrid = new Grid("Ordinateur");
+        PlayerGrid = Player.PlayerGrid;
+        OpponentGrid = Opponent.PlayerGrid;
         PlaceShipsGrids(OpponentGrid);
         PlaceShipsGrids(PlayerGrid);
     }
@@ -22,7 +26,7 @@ public class Game
         int[] shipSizes = { 4, 4, 4, 3, 2, 2 };
         for (int i = 0; i < shipTypes.Length; i++)
         {
-            Ship ship = new Ship { Letter = shipTypes[i], Size = shipSizes[i] };
+            Ship ship = new Ship(shipSizes[i], shipTypes[i]);
             grid.PlaceShip(ship, new Random());
         }
     }
@@ -32,36 +36,51 @@ public class Game
 
         char playerAttackResponse = Attack(OpponentGrid, x, y);
         char computerAttackResponse = '\0';
-
+        SimpleAttackResponse? simpleAttackResponse = null;
         if (playerAttackResponse != '\0')
         {
-            int xOpponent = -1;
-            int yOpponent = -1;
-
-            if (WinnerName == null)
+            if (Winner == null)
             {
                 Random rand = new Random();
                 while (computerAttackResponse == '\0')
                 {
-                    xOpponent = rand.Next(0, 10);
-                    yOpponent = rand.Next(0, 10);
-                    computerAttackResponse = Attack(PlayerGrid, xOpponent, yOpponent);
+                    simpleAttackResponse = AttackByIA();
+                    computerAttackResponse = simpleAttackResponse.AttackResult;
+
                 }
             }
+
+
             return new AttackResponse
             {
-                ComputerAttackCoordinates = new Coordinates { X = xOpponent, Y = yOpponent },
+                ComputerAttackCoordinates = simpleAttackResponse != null && simpleAttackResponse.AttackedCoordinates != null
+                    ? new Coordinates { X = simpleAttackResponse.AttackedCoordinates.X, Y = simpleAttackResponse.AttackedCoordinates.Y }
+                    : null,
                 PlayerAttackResponse = playerAttackResponse,
                 ComputerAttackResponse = computerAttackResponse,
-                Winner = WinnerName
+                OpponentAttackResponseToReplace = simpleAttackResponse,
+                Winner = Winner != null ? Winner.Name : null,
+
             };
         }
         return new AttackResponse { };
     }
 
+
+    public SimpleAttackResponse AttackByIA()
+    {
+        if (Opponent is PlayerIA)
+        {
+            PlayerIA computer = (PlayerIA)Opponent;
+            Coordinates coordinates = computer.CoordinatesToPlay.First();
+            computer.CoordinatesToPlay.RemoveAt(0);
+            return new SimpleAttackResponse { AttackedCoordinates = coordinates, AttackResult = Attack(PlayerGrid, coordinates.X, coordinates.Y) };
+        }
+        return new SimpleAttackResponse { };
+    }
     public char Attack(Grid grid, int x, int y)
     {
-        if (!grid.isAlreadyHitted(x, y) && WinnerName == null)
+        if (!grid.isAlreadyHitted(x, y) && Winner == null)
         {
             char attackResponse = grid.ReceiveAttack(x, y);
             if (grid.isOver())
@@ -69,11 +88,11 @@ public class Game
                 if (grid == OpponentGrid)
                 {
 
-                    WinnerName = PlayerGrid.Name;
+                    Winner = Player;
                 }
                 else if (grid == PlayerGrid)
                 {
-                    WinnerName = OpponentGrid.Name;
+                    Winner = Opponent;
                 }
             }
             return attackResponse;
@@ -84,14 +103,13 @@ public class Game
 
     public void RestartGame()
     {
-        string? lastPlayerGridName = PlayerGrid.Name;
-        string? lastOpponentGridName = OpponentGrid.Name;
+        string? lastPlayerGridName = Player.Name;
+        string? lastOpponentGridName = Opponent.Name;
         if (lastPlayerGridName != null && lastOpponentGridName != null)
         {
-            PlayerGrid = new Grid(lastPlayerGridName);
-            OpponentGrid = new Grid(lastOpponentGridName);
+            PlayerGrid = new Grid();
+            OpponentGrid = new Grid();
         }
-
         PlaceShipsGrids(OpponentGrid);
         PlaceShipsGrids(PlayerGrid);
     }
