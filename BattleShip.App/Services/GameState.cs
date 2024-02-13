@@ -6,9 +6,6 @@ public class GameState
     public char[,] PlayerGrid { get; set; }
     public bool?[,] OpponentGrid { get; set; }
     public string? WinnerName { get; set; } = null;
-
-    public List<Coordinates>? RealPlayerGrid { get; set; }
-
     public List<Ship>? PlayerShips { get; set; }
 
     public GameState()
@@ -40,4 +37,51 @@ public class GameState
         }
 
     }
+
+    public int GetNumberOfDestroyedShipPlayer()
+    {
+        int countX = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                if (PlayerGrid[i, j] == 'X')
+                {
+                    countX++;
+                }
+            }
+        }
+        return countX;
+    }
+
+    public int GetNumberOfDestroyedShipOpponent()
+    {
+        int countX = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                if (OpponentGrid[i, j] == true)
+                {
+                    countX++;
+                }
+            }
+        }
+        return countX;
+    }
+
+    public int GetTotalShipSize()
+    {
+        int totalShipSize = 0;
+        if (PlayerShips != null)
+        {
+            foreach (var ship in PlayerShips)
+            {
+                totalShipSize += ship.Size;
+            }
+        }
+
+        return totalShipSize;
+    }
+
 }

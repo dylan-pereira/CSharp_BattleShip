@@ -3,6 +3,8 @@ public class Grid
 {
     public int Size { get; set; } = 10;
     public char[,] GridState { get; set; }
+
+    public List<Coordinates> GridStateToReplace { get; set; } = new List<Coordinates>();
     public List<Ship> Ships { get; } = new List<Ship>();
     public Grid()
     {
@@ -17,6 +19,15 @@ public class Grid
             for (int j = 0; j < 10; j++)
             {
                 GridState[i, j] = '\0';
+            }
+        }
+
+        var gridCells = new List<Coordinates>();
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                gridCells.Add(new Coordinates { X = i, Y = j, Value = GridState[i, j] });
             }
         }
     }

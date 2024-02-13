@@ -23,7 +23,8 @@
         <div class="stats">
             <h3>Joueur</h3>
             <div>
-                Nombre de bateau détruits : 7/12
+                Nombre de bateau détruits : <text> @GameState.GetNumberOfDestroyedShipPlayer() </text>/<text>
+                    @GameState.GetTotalShipSize() </text>
             </div>
         </div>
         <table>
@@ -33,7 +34,7 @@
                     @for (int j = 0; j < 10; j++)
                     {
                         <td>
-                            @if (GameState.RealPlayerGrid != null)
+                            @if (GameState.PlayerShips != null)
                             {
                                 @foreach (var ship in GameState.PlayerShips)
                                 {
@@ -57,7 +58,7 @@
                             }
                             else if (GameState.PlayerGrid[i, j] != '\0')
                             {
-                                //TODO: delete this
+                                //TODO: delete this, il faut repositionner les bateaux
                                 <text>.</text>
 
                             }
@@ -73,7 +74,8 @@
         <div class="stats">
             <h3>Adversaire</h3>
             <div>
-                Nombre de bateau détruits : 7/12
+                Nombre de bateau détruits : <text> @GameState.GetNumberOfDestroyedShipOpponent() </text>/<text>
+                    @GameState.GetTotalShipSize() </text>
             </div>
         </div>
         <table>
@@ -110,7 +112,6 @@
 
             GameState.Id = gameData.gameId;
 
-            GameState.RealPlayerGrid = gameData.RealPlayerGrid;
             GameState.PlayerShips = gameData.PlayerShips;
             if (GameState.PlayerShips != null)
             {

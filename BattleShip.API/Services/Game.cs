@@ -8,22 +8,32 @@ public class Game
 
     public Player Player { get; set; } = new Player("Player");
 
-    public Player Opponent { get; set; } = new PlayerIA("IA");
+    public Player Opponent { get; set; }
 
-    public Game()
+
+    public Game(int IADifficulty = -1) // if IADifficulty == -1 means no IA
     {
         Id = Guid.NewGuid();
         PlayerGrid = Player.PlayerGrid;
+        PlaceShipsGrids(PlayerGrid);
+
+        if (IADifficulty != -1)
+        {
+            Opponent = new PlayerIA("IA", IADifficulty, PlayerGrid);
+        }
+        else
+        {
+            Opponent = new Player("Opponent");
+        }
         OpponentGrid = Opponent.PlayerGrid;
         PlaceShipsGrids(OpponentGrid);
-        PlaceShipsGrids(PlayerGrid);
     }
 
     private void PlaceShipsGrids(Grid grid)
     {
         // Placer les bateaux sur la grille de l'ordinateur
         string[] shipTypes = { "A", "B", "C", "D", "E", "F" };
-        int[] shipSizes = { 4, 4, 4, 3, 2, 2 };
+        int[] shipSizes = { 4, 4, 3, 2, 2, 1 };
         for (int i = 0; i < shipTypes.Length; i++)
         {
             Ship ship = new Ship(shipSizes[i], shipTypes[i]);
