@@ -6,10 +6,11 @@ using Grpc.Core;
 
 public class BattleshipServiceImpl : BattleshipService.BattleshipServiceBase
 {
-    public Game ServiceGame { get; set; } = new Game();
+    public Game ServiceGame { get; set; } = new Game(1);
+
     public override Task<NewGameResponseMessage> CreateNewGame(Empty request, ServerCallContext context)
     {
-        ServiceGame = new Game();
+        ServiceGame = new Game(1);
         var GameResponse = new NewGameResponseMessage
         {
             GameId = ServiceGame.Id.ToString()
@@ -27,18 +28,21 @@ public class BattleshipServiceImpl : BattleshipService.BattleshipServiceBase
     {
         AttackResponse response = ServiceGame.PlayerAttackIA(request.X, request.Y);
 
-        return Task.FromResult(new AttackResponseMessage 
+        AttackResponseMessage attackResponseMessage = new AttackResponseMessage
         {
             OpponentAttackCoordinate = ConvertToCoordinateMessage(response.ComputerAttackCoordinates),
             PlayerAttackResponse = response.PlayerAttackResponse.ToString(),
             OpponentAttackResponse = response.ComputerAttackResponse.ToString(),
-            Winner = response.Winner,
+            Winner = response.Winner ?? "",
             OpponentAttackResponseToReplace = ConvertToSimpleAttackResponseMessage(response.OpponentAttackResponseToReplace)
-        });
+        };
+
+        return Task.FromResult(attackResponseMessage);
     }
 
     public SimpleAttackResponseMessage? ConvertToSimpleAttackResponseMessage(SimpleAttackResponse? attackResponse)
     {
+
         if (attackResponse == null) return null;
         return new SimpleAttackResponseMessage
         {
