@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+// import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+
+message CoordinateMessage {
+    int32 x = 1;
+    int32 y = 2;
+    optional string value = 3;
+}
+
+message ShipMessage {
+    string letter = 1;
+    string size = 2;
+    repeated CoordinateMessage coordinates = 3;
+    bool horizontal = 4;
+    optional string imagePath = 5;
+}
+
+message NewGameResponseMessage {
+    string gameId = 1;
+    repeated ShipMessage playerShips = 2;
+}
+
+message AttackRequestMessage {
+    string gameId = 1;
+    int32 x = 2;
+    int32 y = 3;
+}
+
+message SimpleAttackResponseMessage {
+    optional CoordinateMessage AttackedCoordinates = 1;
+    string AttackResult = 2;
+}
+
+message AttackResponseMessage {
+    optional CoordinateMessage opponentAttackCoordinate = 1;
+    string playerAttackResponse = 2;
+    string opponentAttackResponse = 3;
+    optional string winner = 4;
+    optional SimpleAttackResponseMessage OpponentAttackResponseToReplace = 5;
+}
+
+service BattleshipService {
+    rpc CreateNewGame(google.protobuf.Empty) returns (NewGameResponseMessage);
+
+    rpc Attack(AttackRequestMessage) returns (AttackResponseMessage);
+}
