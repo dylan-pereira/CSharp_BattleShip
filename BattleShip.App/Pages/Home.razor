@@ -169,10 +169,10 @@
                     gameData.OpponentAttackResponseToReplace.AttackedCoordinates.Y] =
                     gameData.OpponentAttackResponseToReplace.AttackResult;
                 }
-                /*if (gameData.ComputerAttackCoordinates != null && gameData.ComputerAttackCoordinates.X != -1 &&
-                gameData.ComputerAttackCoordinates.Y != -1)
-                GameState.PlayerGrid[gameData.ComputerAttackCoordinates.X, gameData.ComputerAttackCoordinates.Y] =
-                gameData.ComputerAttackResponse;*/
+                /*if (gameData.OpponentAttackCoordinates != null && gameData.OpponentAttackCoordinates.X != -1 &&
+                gameData.OpponentAttackCoordinates.Y != -1)
+                GameState.PlayerGrid[gameData.OpponentAttackCoordinates.X, gameData.OpponentAttackCoordinates.Y] =
+                gameData.OpponentAttackResponse;*/
                 StateHasChanged();
             }
         }
