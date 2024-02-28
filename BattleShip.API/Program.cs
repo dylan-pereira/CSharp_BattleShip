@@ -1,7 +1,10 @@
 using BattleShip.Models;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+IValidator<AttackRequest> validator = new AttackRequestValidator();
 
 builder.Services.AddCors(options =>
 {
@@ -44,6 +47,11 @@ app.MapGet("/newgame", () =>
 
 app.MapPost("/attack", ([FromBody] AttackRequest attackRequest) =>
 {
+    ValidationResult result = validator.Validate(attackRequest);
+    if (!result.IsValid)
+    {
+        return Results.BadRequest(result.ToDictionary());
+    }
     return Results.Ok(game.PlayerAttackIA(attackRequest.X, attackRequest.Y));
 })
 .WithName("PostAttack")
