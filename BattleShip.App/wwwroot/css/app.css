@@ -152,6 +152,8 @@ table {
 
 #difficulty-selector{
     margin:auto;
+    color: white;
+    font-size: 18px;
 }
 
 .button {
@@ -216,6 +218,7 @@ table {
     align-items: end;
     display: flex;
 }
+
 
 body {
     background-image: url('/images/battleship_background.jpg');

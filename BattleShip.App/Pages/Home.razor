@@ -12,7 +12,7 @@
             <button class="button" @onclick="RandomPlay">Jouer aléatoirement</button>
         </div>
         <div id="difficulty-selector">
-            <label for="difficulty">Difficulté :</label>
+            <label for="difficulty">Difficulté IA :</label>
             <select id="difficulty" @onchange="ChangeDifficulty">
                 <option value="0">Facile</option>
                 <option value="1">Moyen</option>
@@ -33,7 +33,7 @@
         <div class="stats">
             <span class="bold"> Joueur</span>
             <div>
-                Nombre de bateau détruits : <span class="bold"><text> @GameState.GetNumberOfDestroyedShipPlayer()
+                Nombre de bateau détruits :&nbsp;<span class="bold"><text> @GameState.GetNumberOfDestroyedShipPlayer()
                     </text>/<text>
                         @GameState.GetTotalShipSize() </text></span>
             </div>
@@ -85,8 +85,9 @@
         <div class="stats">
             <span class="bold"> Adversaire</span>
             <div>
-                Nombre de bateau détruits : <text> @GameState.GetNumberOfDestroyedShipOpponent() </text>/<text>
-                    @GameState.GetTotalShipSize() </text>
+                Nombre de bateau détruits :&nbsp;<span class="bold"><text> @GameState.GetNumberOfDestroyedShipOpponent()
+                    </text>/<text>
+                        @GameState.GetTotalShipSize() </text></span>
             </div>
         </div>
         <table>

@@ -35,8 +35,6 @@ if (app.Environment.IsDevelopment())
     app.MapGrpcReflectionService();
 }
 
-app.UseHttpsRedirection();
-
 app.UseCors(c => { c.AllowAnyMethod(); c.AllowAnyOrigin(); c.AllowAnyHeader(); });
 
 Game game = new Game(1);
