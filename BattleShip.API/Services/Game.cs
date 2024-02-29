@@ -45,17 +45,17 @@ public class Game
     {
 
         char playerAttackResponse = Attack(OpponentGrid, x, y);
-        char computerAttackResponse = '\0';
+        char opponentAttackResponse = '\0';
         SimpleAttackResponse? simpleAttackResponse = null;
         if (playerAttackResponse != '\0')
         {
             if (Winner == null)
             {
                 Random rand = new Random();
-                while (computerAttackResponse == '\0')
+                while (opponentAttackResponse == '\0')
                 {
                     simpleAttackResponse = AttackByIA();
-                    computerAttackResponse = simpleAttackResponse.AttackResult;
+                    opponentAttackResponse = simpleAttackResponse.AttackResult;
 
                 }
             }
@@ -63,11 +63,11 @@ public class Game
 
             return new AttackResponse
             {
-                ComputerAttackCoordinates = simpleAttackResponse != null && simpleAttackResponse.AttackedCoordinates != null
+                OpponentAttackCoordinates = simpleAttackResponse != null && simpleAttackResponse.AttackedCoordinates != null
                     ? new Coordinates { X = simpleAttackResponse.AttackedCoordinates.X, Y = simpleAttackResponse.AttackedCoordinates.Y }
                     : null,
                 PlayerAttackResponse = playerAttackResponse,
-                ComputerAttackResponse = computerAttackResponse,
+                OpponentAttackResponse = opponentAttackResponse,
                 OpponentAttackResponseToReplace = simpleAttackResponse,
                 Winner = Winner != null ? Winner.Name : null,
 
@@ -81,9 +81,9 @@ public class Game
     {
         if (Opponent is PlayerIA)
         {
-            PlayerIA computer = (PlayerIA)Opponent;
-            Coordinates coordinates = computer.CoordinatesToPlay.First();
-            computer.CoordinatesToPlay.RemoveAt(0);
+            PlayerIA opponent = (PlayerIA)Opponent;
+            Coordinates coordinates = opponent.CoordinatesToPlay.First();
+            opponent.CoordinatesToPlay.RemoveAt(0);
             return new SimpleAttackResponse { AttackedCoordinates = coordinates, AttackResult = Attack(PlayerGrid, coordinates.X, coordinates.Y) };
         }
         return new SimpleAttackResponse { };
@@ -111,6 +111,16 @@ public class Game
         return '\0';
     }
 
+    public DifficultyRequest ChangeIADifficulty(int difficulty)
+    {
+        if (Opponent is PlayerIA)
+        {
+            PlayerIA opponent = (PlayerIA)Opponent;
+            opponent.SetDifficulty(difficulty);
+            return new DifficultyRequest { GameId = Id, Difficulty = difficulty };
+        }
+        return new DifficultyRequest { };
+    }
     public void RestartGame()
     {
         string? lastPlayerGridName = Player.Name;

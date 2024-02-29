@@ -4,7 +4,8 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
-IValidator<AttackRequest> validator = new AttackRequestValidator();
+IValidator<AttackRequest> validatorAttack = new AttackRequestValidator();
+IValidator<DifficultyRequest> validatorDifficulty = new DifficultyRequestValidator();
 
 builder.Services.AddCors(options =>
 {
@@ -51,7 +52,7 @@ app.MapGet("/newgame", () =>
 
 app.MapPost("/attack", ([FromBody] AttackRequest attackRequest) =>
 {
-    ValidationResult result = validator.Validate(attackRequest);
+    ValidationResult result = validatorAttack.Validate(attackRequest);
     if (!result.IsValid)
     {
         return Results.BadRequest(result.ToDictionary());
@@ -59,6 +60,18 @@ app.MapPost("/attack", ([FromBody] AttackRequest attackRequest) =>
     return Results.Ok(game.PlayerAttackIA(attackRequest.X, attackRequest.Y));
 })
 .WithName("PostAttack")
+.WithOpenApi();
+
+app.MapPost("/difficulty", ([FromBody] DifficultyRequest difficultyRequest) =>
+{
+    ValidationResult result = validatorDifficulty.Validate(difficultyRequest);
+    if (!result.IsValid)
+    {
+        return Results.BadRequest(result.ToDictionary());
+    }
+    return Results.Ok(game.ChangeIADifficulty(difficultyRequest.Difficulty));
+})
+.WithName("PostDifficulty")
 .WithOpenApi();
 
 app.Run();

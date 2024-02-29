@@ -11,20 +11,31 @@
             <button class="button" @onclick="StartNewGame">Nouvelle Partie</button>
             <button class="button" @onclick="RandomPlay">Jouer aléatoirement</button>
         </div>
-        <div id="result" class="@(GameState.WinnerName != null ? "": "notshow")">
-
-            <text> @GameState.WinnerName</text>&nbsp;a remporté la partie !
+        <div id="difficulty-selector">
+            <label for="difficulty">Difficulté :</label>
+            <select id="difficulty" @onchange="ChangeDifficulty">
+                <option value="0">Facile</option>
+                <option value="1">Moyen</option>
+                <option value="2">Sucidaire</option>
+            </select>
         </div>
+    </div>
+</div>
+
+<div id="result" @onclick="StartNewGame" class="@(GameState.WinnerName != null ? "": "notshow")">
+    <div>
+        <text> @GameState.WinnerName</text>&nbsp;a remporté la partie !
     </div>
 </div>
 
 <div id="game" class="@(GameState.Id != Guid.Empty ? "": "notshow")">
     <div>
         <div class="stats">
-            <h3>Joueur</h3>
+            <span class="bold"> Joueur</span>
             <div>
-                Nombre de bateau détruits : <text> @GameState.GetNumberOfDestroyedShipPlayer() </text>/<text>
-                    @GameState.GetTotalShipSize() </text>
+                Nombre de bateau détruits : <span class="bold"><text> @GameState.GetNumberOfDestroyedShipPlayer()
+                    </text>/<text>
+                        @GameState.GetTotalShipSize() </text></span>
             </div>
         </div>
         <table>
@@ -72,7 +83,7 @@
     </div>
     <div>
         <div class="stats">
-            <h3>Adversaire</h3>
+            <span class="bold"> Adversaire</span>
             <div>
                 Nombre de bateau détruits : <text> @GameState.GetNumberOfDestroyedShipOpponent() </text>/<text>
                     @GameState.GetTotalShipSize() </text>
@@ -111,6 +122,7 @@
             GameState.ResetGame();
 
             GameState.Id = gameData.gameId;
+            await GameService.ChangeDifficulty(GameState.Id, GameState.Difficulty);
 
             GameState.PlayerShips = gameData.PlayerShips;
             if (GameState.PlayerShips != null)
@@ -169,12 +181,18 @@
                     gameData.OpponentAttackResponseToReplace.AttackedCoordinates.Y] =
                     gameData.OpponentAttackResponseToReplace.AttackResult;
                 }
-                /*if (gameData.ComputerAttackCoordinates != null && gameData.ComputerAttackCoordinates.X != -1 &&
-                gameData.ComputerAttackCoordinates.Y != -1)
-                GameState.PlayerGrid[gameData.ComputerAttackCoordinates.X, gameData.ComputerAttackCoordinates.Y] =
-                gameData.ComputerAttackResponse;*/
+                /*if (gameData.OpponentAttackCoordinates != null && gameData.OpponentAttackCoordinates.X != -1 &&
+                gameData.OpponentAttackCoordinates.Y != -1)
+                GameState.PlayerGrid[gameData.OpponentAttackCoordinates.X, gameData.OpponentAttackCoordinates.Y] =
+                gameData.OpponentAttackResponse;*/
                 StateHasChanged();
             }
         }
+    }
+    private async Task ChangeDifficulty(ChangeEventArgs e)
+    {
+        GameState.Difficulty = Convert.ToInt32(e.Value); ;
+        var response = await GameService.ChangeDifficulty(GameState.Id, GameState.Difficulty);
+
     }
 }
