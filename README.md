@@ -4,6 +4,14 @@ TP C#
 Travail réalisé par LAMOINE Clément & PEREIRA Dylan
 INFRES 14
 
+## How to run ?
+
+    > Exécuter un premier dotnet run dans le /BattleShip.API pour lancer l'api
+    
+    > Exécuter un second dotnet run dans le /BattleShip.APP pour lancer le front
+    
+    > dotnet dev-certs https --trust
+
 ## Features obligatoires
 L'ensemble des fonctionnalités attendues sont réalisés. Etape 1 -> 8
 

@@ -30,9 +30,9 @@ public class BattleshipServiceImpl : BattleshipService.BattleshipServiceBase
 
         AttackResponseMessage attackResponseMessage = new AttackResponseMessage
         {
-            OpponentAttackCoordinate = ConvertToCoordinateMessage(response.ComputerAttackCoordinates),
+            OpponentAttackCoordinate = ConvertToCoordinateMessage(response.OpponentAttackCoordinates),
             PlayerAttackResponse = response.PlayerAttackResponse.ToString(),
-            OpponentAttackResponse = response.ComputerAttackResponse.ToString(),
+            OpponentAttackResponse = response.OpponentAttackResponse.ToString(),
             Winner = response.Winner ?? "",
             OpponentAttackResponseToReplace = ConvertToSimpleAttackResponseMessage(response.OpponentAttackResponseToReplace)
         };
