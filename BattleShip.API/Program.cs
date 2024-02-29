@@ -2,6 +2,7 @@ using BattleShip.Models;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 IValidator<AttackRequest> validatorAttack = new AttackRequestValidator();
@@ -36,6 +37,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(c => { c.AllowAnyMethod(); c.AllowAnyOrigin(); c.AllowAnyHeader(); });
+
+using (var context = new WinnerDbContext())
+{
+    await context.Database.MigrateAsync();
+}
 
 Game game = new Game(1);
 

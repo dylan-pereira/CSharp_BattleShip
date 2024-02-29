@@ -104,11 +104,41 @@ public class Game
                 {
                     Winner = Opponent;
                 }
+                using (var context = new WinnerDbContext())
+                {
+                    SaveWinner(context);
+                }
             }
             return attackResponse;
         }
 
         return '\0';
+    }
+
+    public void SaveWinner(WinnerDbContext context)
+    {
+        if (Winner != null)
+        {
+
+            var winnerRecords = context.Winners.Where(w => w.Name == Winner.Name).ToList();
+            if (!winnerRecords.Any())
+            {
+                var newWinner = new Winner
+                {
+                    Name = Winner.Name,
+                    Wins = 1,
+                };
+                context.Winners.Add(newWinner);
+                context.SaveChanges();
+            }
+            else
+            {
+                var winnerToChange = winnerRecords[0];
+                winnerToChange.Wins = winnerToChange.Wins + 1;
+                winnerToChange.LastWin = DateTime.UtcNow;
+                context.SaveChanges();
+            }
+        }
     }
 
     public DifficultyRequest ChangeIADifficulty(int difficulty)
