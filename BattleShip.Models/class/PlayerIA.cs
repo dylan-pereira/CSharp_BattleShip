@@ -9,6 +9,18 @@ namespace BattleShip.Models
         {
             Difficulty = difficulty;
             OpponentGrid = opponentGrid;
+            GenerateCoordinatesToPlay();
+        }
+
+        public void SetDifficulty(int difficulty)
+        {
+            Difficulty = difficulty;
+            CoordinatesToPlay = [];
+            GenerateCoordinatesToPlay();
+        }
+
+        public void GenerateCoordinatesToPlay()
+        {
             switch (Difficulty)
             {
                 case 2://Devin, imbattable, n'essaye même pas.

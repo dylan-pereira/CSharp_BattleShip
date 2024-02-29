@@ -113,8 +113,13 @@ table {
 
 #game{
     display: flex;
+    padding-top: 30px;
     flex-direction: row;
     justify-content: space-evenly
+}
+
+.bold{
+    font-weight: bold;
 }
 
 .notshow{
@@ -122,9 +127,31 @@ table {
 }
 
 #result{
+    position: absolute;
+    margin: auto;
+    top:0;
+    left:0;
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     font-size: 50px;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#result > div {
+    color: white;
+    border-spacing: 0px;
+    background-color: rgba(0, 0, 0);
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#difficulty-selector{
+    margin:auto;
 }
 
 .button {
@@ -176,9 +203,13 @@ table {
 
 .stats{
     display: flex;
+    padding: 10px;
     flex-direction: row;
     justify-content: space-between;
     vertical-align: middle;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    color: white !important;
 }
 
 .stats > div {

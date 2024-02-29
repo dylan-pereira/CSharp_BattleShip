@@ -111,6 +111,16 @@ public class Game
         return '\0';
     }
 
+    public DifficultyRequest ChangeIADifficulty(int difficulty)
+    {
+        if (Opponent is PlayerIA)
+        {
+            PlayerIA opponent = (PlayerIA)Opponent;
+            opponent.SetDifficulty(difficulty);
+            return new DifficultyRequest { GameId = Id, Difficulty = difficulty };
+        }
+        return new DifficultyRequest { };
+    }
     public void RestartGame()
     {
         string? lastPlayerGridName = Player.Name;

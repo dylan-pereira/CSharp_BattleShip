@@ -28,4 +28,16 @@ public class GameService : IGameService
         response.EnsureSuccessStatusCode(); // Throw if not successful
         return await response.Content.ReadFromJsonAsync<AttackResponse>();
     }
+    public async Task<DifficultyRequest?> ChangeDifficulty(Guid gameId, int difficulty)
+    {
+        var difficultyRequest = new DifficultyRequest
+        {
+            GameId = gameId,
+            Difficulty = difficulty,
+        };
+
+        var response = await _httpClient.PostAsJsonAsync("/difficulty", difficultyRequest);
+        response.EnsureSuccessStatusCode(); // Throw if not successful
+        return await response.Content.ReadFromJsonAsync<DifficultyRequest>();
+    }
 }

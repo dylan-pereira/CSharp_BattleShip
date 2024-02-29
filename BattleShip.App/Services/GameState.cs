@@ -7,6 +7,7 @@ public class GameState
     public bool?[,] OpponentGrid { get; set; }
     public string? WinnerName { get; set; } = null;
     public List<Ship>? PlayerShips { get; set; }
+    public int Difficulty { get; set; }
 
     public GameState()
     {
