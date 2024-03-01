@@ -24,9 +24,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 
-var app = builder.Build();
-app.MapGrpcService<BattleshipServiceImpl>();
+Game game = new Game(1);
+builder.Services.AddSingleton<Game>(game);
 
+var app = builder.Build();
+app.MapGrpcService<BattleshipServiceImpl>().EnableGrpcWeb();
+app.UseGrpcWeb();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -37,11 +40,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(c => { c.AllowAnyMethod(); c.AllowAnyOrigin(); c.AllowAnyHeader(); });
 
-Game game = new Game(1);
-
 app.MapGet("/newgame", () =>
 {
-    game = new Game(1);
+    game.RestartGame();
 
     return Results.Ok(new NewGameResponse { gameId = game.Id, PlayerShips = game.PlayerGrid.Ships });
 })

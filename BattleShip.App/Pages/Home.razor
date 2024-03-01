@@ -159,8 +159,8 @@
     {
         if (GameState.OpponentGrid[x, y] == null && GameState.WinnerName == null)
         {
-            var gameData = await GameService.AttackOpponent(GameState.Id, x, y);
-            if (gameData != null)
+                        var gameData = await GameService.AttackOpponent(GameState.Id, x, y);
+                        if (gameData != null)
             {
 
                 if (gameData.PlayerAttackResponse == 'O')
@@ -171,7 +171,7 @@
                 {
                     GameState.OpponentGrid[x, y] = true;
                 }
-                if (gameData.Winner != null)
+                if (gameData.Winner != null && gameData.Winner != "")
                 {
                     GameState.WinnerName = gameData.Winner;
                 }

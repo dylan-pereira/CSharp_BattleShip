@@ -10,12 +10,16 @@ public class Game
 
     public Player Opponent { get; set; }
 
+    private readonly int IADifficulty;
 
-    public Game(int IADifficulty = -1) // if IADifficulty == -1 means no IA
+
+    public Game(int iaDifficulty = -1) // if IADifficulty == -1 means no IA
     {
         Id = Guid.NewGuid();
         PlayerGrid = Player.PlayerGrid;
         PlaceShipsGrids(PlayerGrid);
+
+        IADifficulty = iaDifficulty;
 
         if (IADifficulty != -1)
         {
@@ -123,14 +127,22 @@ public class Game
     }
     public void RestartGame()
     {
-        string? lastPlayerGridName = Player.Name;
-        string? lastOpponentGridName = Opponent.Name;
-        if (lastPlayerGridName != null && lastOpponentGridName != null)
-        {
-            PlayerGrid = new Grid();
-            OpponentGrid = new Grid();
-        }
-        PlaceShipsGrids(OpponentGrid);
+        Winner = null;
+        Player = new Player("Player");
+        PlayerGrid = Player.PlayerGrid;
+
         PlaceShipsGrids(PlayerGrid);
+        if (IADifficulty != -1)
+        {
+            Opponent = new PlayerIA("IA", IADifficulty, PlayerGrid);
+        }
+        else
+        {
+            Opponent = new Player("Opponent");
+        }
+
+        OpponentGrid = Opponent.PlayerGrid;
+
+        PlaceShipsGrids(OpponentGrid);
     }
 }
