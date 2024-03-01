@@ -6,8 +6,7 @@ public class Game
     public Grid OpponentGrid { get; private set; }
     public Player? Winner { get; set; } = null;
 
-    public Player Player { get; set; } = new Player("Player");
-
+    public Player Player { get; set; } = new Player("Joueur");
     public Player Opponent { get; set; }
 
 
@@ -19,11 +18,11 @@ public class Game
 
         if (IADifficulty != -1)
         {
-            Opponent = new PlayerIA("IA", IADifficulty, PlayerGrid);
+            Opponent = new PlayerIA("Ordi", IADifficulty, PlayerGrid);
         }
         else
         {
-            Opponent = new Player("Opponent");
+            Opponent = new Player("Adversaire");
         }
         OpponentGrid = Opponent.PlayerGrid;
         PlaceShipsGrids(OpponentGrid);

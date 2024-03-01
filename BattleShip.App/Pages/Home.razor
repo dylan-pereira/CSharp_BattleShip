@@ -7,6 +7,11 @@
 <img id="logo" src="images/battleship_logo.png" alt="logo" />
 <div id="hudcontainer">
     <div id="hud">
+        <div id="player-name-input">
+            <label for="player-name">Nom du joueur :</label>
+            <input type="text" id="player-name" @bind="inputPlayerNameValue" />
+            <button @onclick="ChangePlayerName">OK</button>
+        </div>
         <div id="button-group">
             <button class="button" @onclick="StartNewGame">Nouvelle Partie</button>
             <button class="button" @onclick="RandomPlay">Jouer aléatoirement</button>
@@ -22,16 +27,52 @@
     </div>
 </div>
 
-<div id="result" @onclick="StartNewGame" class="@(GameState.WinnerName != null ? "": "notshow")">
+<div id="leaderboard">
+    <button class="button" @onclick="ShowLeaderboard">Classement</button>
+</div>
+
+<div @onclick="StartNewGame" class="@(GameState.WinnerName != null ? "modal": "notshow modal")">
     <div>
         <text> @GameState.WinnerName</text>&nbsp;a remporté la partie !
     </div>
 </div>
 
+<div @onclick="ResetLeaderboard" id="leaderboard-modal"
+    class="@(GameState.Leaderboard != null ? "modal": "notshow modal")">
+    @if (GameState.Leaderboard != null && GameState.Leaderboard.Any())
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Nom</th>
+                    <th>Nombre de victoires</th>
+                    <th>Dernière victoire</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var sortedLeaderboard = GameState.Leaderboard.OrderByDescending(leader => leader.Wins).ToList();
+                    for (int i = 0; i < sortedLeaderboard.Count; i++)
+                    {
+                        var leader = sortedLeaderboard[i];
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>@leader.Name</td>
+                            <td width=10>@leader.Wins</td>
+                            <td style="font-size:18px;">@leader.LastWin</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
 <div id="game" class="@(GameState.Id != Guid.Empty ? "": "notshow")">
     <div>
         <div class="stats">
-            <span class="bold"> Joueur</span>
+            <span class="bold"> @GameState.PlayerName</span>
             <div>
                 Nombre de bateau détruits :&nbsp;<span class="bold"><text> @GameState.GetNumberOfDestroyedShipPlayer()
                     </text>/<text>
@@ -115,6 +156,8 @@
     </div>
 </div>
 @code {
+    private string inputPlayerNameValue { get; set; } = "";
+
     private async Task StartNewGame()
     {
         var gameData = await GameService.StartNewGame();
@@ -152,6 +195,19 @@
             int y = rand.Next(0, 10);
             await AttackOpponent(x, y);
         }
+        StateHasChanged();
+    }
+
+    private async void ResetLeaderboard()
+    {
+        GameState.Leaderboard = null;
+        StateHasChanged();
+    }
+
+    private async void ShowLeaderboard()
+    {
+        var response = await GameService.GetLeaderboard();
+        GameState.Leaderboard = response;
         StateHasChanged();
     }
 
@@ -196,4 +252,14 @@
         var response = await GameService.ChangeDifficulty(GameState.Id, GameState.Difficulty);
 
     }
+
+    private async Task ChangePlayerName()
+    {
+        //var playerName = await JSRuntime.InvokeAsync<string>("getPlayerName");
+        Console.WriteLine(inputPlayerNameValue);
+        GameState.PlayerName = inputPlayerNameValue;
+        //await GameService.UpdatePlayerName(playerName);
+        StateHasChanged();
+    }
+
 }

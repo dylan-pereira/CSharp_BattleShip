@@ -8,6 +8,8 @@ public class GameState
     public string? WinnerName { get; set; } = null;
     public List<Ship>? PlayerShips { get; set; }
     public int Difficulty { get; set; }
+    public string PlayerName { get; set; } = "Joueur";
+    public List<Winner>? Leaderboard { get; set; } = null;
 
     public GameState()
     {

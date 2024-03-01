@@ -40,4 +40,10 @@ public class GameService : IGameService
         response.EnsureSuccessStatusCode(); // Throw if not successful
         return await response.Content.ReadFromJsonAsync<DifficultyRequest>();
     }
+
+    public async Task<List<Winner>> GetLeaderboard()
+    {
+        return await _httpClient.GetFromJsonAsync<List<Winner>>("/winners");
+    }
+
 }

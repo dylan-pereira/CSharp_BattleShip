@@ -78,4 +78,15 @@ app.MapPost("/difficulty", ([FromBody] DifficultyRequest difficultyRequest) =>
 .WithName("PostDifficulty")
 .WithOpenApi();
 
+app.MapGet("/winners", () =>
+{
+    using (var context = new WinnerDbContext())
+    {
+        var winners = context.Winners.ToList();
+        return Results.Ok(winners);
+    }
+})
+.WithName("GetWinners")
+.WithOpenApi();
+
 app.Run();
