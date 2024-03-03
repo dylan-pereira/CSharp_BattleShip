@@ -4,9 +4,7 @@
 
 TP C#
 
-Travail réalisé par LAMOINE Clément & PEREIRA Dylan
-
-INFRES 14
+Travail réalisé par LAMOINE Clément & PEREIRA Dylan | INFRES 14
 
 ## How to run ?
 
