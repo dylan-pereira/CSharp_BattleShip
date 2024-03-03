@@ -101,7 +101,7 @@ img {
     display: flex;
 }
 
-table {
+#game table {
     border-width: 1px;
     border-style: solid;
     border-color: white;
@@ -109,6 +109,39 @@ table {
     border-spacing: 0px;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
+}
+
+#leaderboard-modal table {
+    width: 800px;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#leaderboard-modal th,
+#leaderboard-modal td {
+    text-align: left;
+}
+
+#leaderboard-modal th {
+    background-color: #f2f2f2;
+    font-size:medium;
+}
+
+#leaderboard-modal tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#leaderboard-modal tr:nth-child(even) {
+    background-color: #d6d6d6;
+}
+
+#leaderboard-modal tr:hover {
+    background-color: #f5f5f5;
+}
+
+#leaderboard-modal td,
+#leaderboard-modal th {
+    text-align: center;
 }
 
 #game{
@@ -126,7 +159,7 @@ table {
     display : none !important;
 }
 
-#result{
+.modal{
     position: absolute;
     margin: auto;
     top:0;
@@ -142,7 +175,7 @@ table {
     cursor: pointer;
 }
 
-#result > div {
+.modal > div {
     color: white;
     border-spacing: 0px;
     background-color: rgba(0, 0, 0);
@@ -150,10 +183,22 @@ table {
     padding: 10px;
 }
 
-#difficulty-selector{
+#little-text{
+    font-size: 16px;
+    text-align: center;
+}
+
+#difficulty-selector, #player-name-input{
     margin:auto;
     color: white;
     font-size: 18px;
+}
+
+#leaderboard{
+    position: absolute;
+    top: 0;
+    margin: 20px;
+    left: 0;
 }
 
 .button {

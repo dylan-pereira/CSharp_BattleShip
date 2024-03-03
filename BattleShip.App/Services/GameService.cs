@@ -40,7 +40,7 @@ public class GameService : IGameService
         };
         AttackResponseMessage attackResponseMessage = await _grpcClient.AttackAsync(attackRequestMessage);
 
-            SimpleAttackResponse? simpleAttackResponse = null; 
+        SimpleAttackResponse? simpleAttackResponse = null;
         if (attackResponseMessage.OpponentAttackResponseToReplace != null)
         {
             simpleAttackResponse = new SimpleAttackResponse
@@ -104,4 +104,23 @@ public class GameService : IGameService
         };
         return ship;
     }
+
+    public async Task<List<Winner>> GetLeaderboard()
+    {
+        return await _httpClient.GetFromJsonAsync<List<Winner>>("/winners");
+    }
+
+    public async Task<PlayerNameRequest?> ChangePlayerName(Guid gameId, string playerName)
+    {
+        var playernameRequest = new PlayerNameRequest
+        {
+            GameId = gameId,
+            Name = playerName,
+        };
+
+        var response = await _httpClient.PostAsJsonAsync("/playername", playernameRequest);
+        response.EnsureSuccessStatusCode(); // Throw if not successful
+        return await response.Content.ReadFromJsonAsync<PlayerNameRequest>();
+    }
+
 }

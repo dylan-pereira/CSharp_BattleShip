@@ -6,8 +6,7 @@ public class Game
     public Grid OpponentGrid { get; private set; }
     public Player? Winner { get; set; } = null;
 
-    public Player Player { get; set; } = new Player("Player");
-
+    public Player Player { get; set; } = new Player("");
     public Player Opponent { get; set; }
 
     private readonly int IADifficulty;
@@ -23,11 +22,11 @@ public class Game
 
         if (IADifficulty != -1)
         {
-            Opponent = new PlayerIA("IA", IADifficulty, PlayerGrid);
+            Opponent = new PlayerIA("Ordinateur", IADifficulty, PlayerGrid);
         }
         else
         {
-            Opponent = new Player("Opponent");
+            Opponent = new Player("Adversaire");
         }
         OpponentGrid = Opponent.PlayerGrid;
         PlaceShipsGrids(OpponentGrid);
@@ -108,11 +107,41 @@ public class Game
                 {
                     Winner = Opponent;
                 }
+                using (var context = new WinnerDbContext())
+                {
+                    SaveWinner(context);
+                }
             }
             return attackResponse;
         }
 
         return '\0';
+    }
+
+    public void SaveWinner(WinnerDbContext context)
+    {
+        if (Winner != null && !(Winner is PlayerIA) && Winner.Name != string.Empty)
+        {
+
+            var winnerRecords = context.Winners.Where(w => w.Name == Winner.Name).ToList();
+            if (!winnerRecords.Any())
+            {
+                var newWinner = new Winner
+                {
+                    Name = Winner.Name,
+                    Wins = 1,
+                };
+                context.Winners.Add(newWinner);
+                context.SaveChanges();
+            }
+            else
+            {
+                var winnerToChange = winnerRecords[0];
+                winnerToChange.Wins = winnerToChange.Wins + 1;
+                winnerToChange.LastWin = DateTime.UtcNow;
+                context.SaveChanges();
+            }
+        }
     }
 
     public DifficultyRequest ChangeIADifficulty(int difficulty)
@@ -125,6 +154,13 @@ public class Game
         }
         return new DifficultyRequest { };
     }
+
+    public PlayerNameRequest ChangePlayerName(string newPlayerName)
+    {
+        Player.Name = newPlayerName;
+        return new PlayerNameRequest { GameId = Id, Name = newPlayerName };
+    }
+
     public void RestartGame()
     {
         Winner = null;
