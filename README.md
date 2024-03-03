@@ -4,6 +4,9 @@ TP C#
 Travail réalisé par LAMOINE Clément & PEREIRA Dylan
 INFRES 14
 
+![image](https://github.com/dylan-pereira/CSharp_BattleShip/assets/60466017/be41d636-f50b-4d73-9a88-28cbdb5ee0bb)
+
+
 ## How to run ?
 
     > Exécuter un premier dotnet run dans le /BattleShip.API pour lancer l'api
