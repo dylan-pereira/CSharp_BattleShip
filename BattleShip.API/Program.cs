@@ -2,10 +2,12 @@ using BattleShip.Models;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 IValidator<AttackRequest> validatorAttack = new AttackRequestValidator();
 IValidator<DifficultyRequest> validatorDifficulty = new DifficultyRequestValidator();
+IValidator<PlayerNameRequest> validatorPlayerName = new PlayerNameRequestValidator();
 
 builder.Services.AddCors(options =>
 {
@@ -36,6 +38,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(c => { c.AllowAnyMethod(); c.AllowAnyOrigin(); c.AllowAnyHeader(); });
+
+using (var context = new WinnerDbContext())
+{
+    await context.Database.MigrateAsync();
+}
 
 Game game = new Game(1);
 
@@ -70,6 +77,29 @@ app.MapPost("/difficulty", ([FromBody] DifficultyRequest difficultyRequest) =>
     return Results.Ok(game.ChangeIADifficulty(difficultyRequest.Difficulty));
 })
 .WithName("PostDifficulty")
+.WithOpenApi();
+
+app.MapGet("/winners", () =>
+{
+    using (var context = new WinnerDbContext())
+    {
+        var winners = context.Winners.ToList();
+        return Results.Ok(winners);
+    }
+})
+.WithName("GetWinners")
+.WithOpenApi();
+
+app.MapPost("/playername", ([FromBody] PlayerNameRequest playerNameRequest) =>
+{
+    ValidationResult result = validatorPlayerName.Validate(playerNameRequest);
+    if (!result.IsValid)
+    {
+        return Results.BadRequest(result.ToDictionary());
+    }
+    return Results.Ok(game.ChangePlayerName(playerNameRequest.Name));
+})
+.WithName("PostPlayerName")
 .WithOpenApi();
 
 app.Run();
