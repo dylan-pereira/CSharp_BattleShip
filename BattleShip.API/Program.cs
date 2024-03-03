@@ -47,8 +47,6 @@ using (var context = new WinnerDbContext())
     await context.Database.MigrateAsync();
 }
 
-Game game = new Game(1);
-
 app.MapGet("/newgame", () =>
 {
     game.RestartGame();
