@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 IValidator<AttackRequest> validatorAttack = new AttackRequestValidator();
 IValidator<DifficultyRequest> validatorDifficulty = new DifficultyRequestValidator();
+IValidator<PlayerNameRequest> validatorPlayerName = new PlayerNameRequestValidator();
 
 builder.Services.AddCors(options =>
 {
@@ -87,6 +88,18 @@ app.MapGet("/winners", () =>
     }
 })
 .WithName("GetWinners")
+.WithOpenApi();
+
+app.MapPost("/playername", ([FromBody] PlayerNameRequest playerNameRequest) =>
+{
+    ValidationResult result = validatorPlayerName.Validate(playerNameRequest);
+    if (!result.IsValid)
+    {
+        return Results.BadRequest(result.ToDictionary());
+    }
+    return Results.Ok(game.ChangePlayerName(playerNameRequest.Name));
+})
+.WithName("PostPlayerName")
 .WithOpenApi();
 
 app.Run();

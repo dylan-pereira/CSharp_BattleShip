@@ -6,7 +6,7 @@ public class Game
     public Grid OpponentGrid { get; private set; }
     public Player? Winner { get; set; } = null;
 
-    public Player Player { get; set; } = new Player("Joueur");
+    public Player Player { get; set; } = new Player("");
     public Player Opponent { get; set; }
 
 
@@ -18,7 +18,7 @@ public class Game
 
         if (IADifficulty != -1)
         {
-            Opponent = new PlayerIA("Ordi", IADifficulty, PlayerGrid);
+            Opponent = new PlayerIA("Ordinateur", IADifficulty, PlayerGrid);
         }
         else
         {
@@ -116,7 +116,7 @@ public class Game
 
     public void SaveWinner(WinnerDbContext context)
     {
-        if (Winner != null)
+        if (Winner != null && !(Winner is PlayerIA) && Winner.Name != string.Empty)
         {
 
             var winnerRecords = context.Winners.Where(w => w.Name == Winner.Name).ToList();
@@ -150,6 +150,13 @@ public class Game
         }
         return new DifficultyRequest { };
     }
+
+    public PlayerNameRequest ChangePlayerName(string newPlayerName)
+    {
+        Player.Name = newPlayerName;
+        return new PlayerNameRequest { GameId = Id, Name = newPlayerName };
+    }
+
     public void RestartGame()
     {
         string? lastPlayerGridName = Player.Name;

@@ -46,4 +46,17 @@ public class GameService : IGameService
         return await _httpClient.GetFromJsonAsync<List<Winner>>("/winners");
     }
 
+    public async Task<PlayerNameRequest?> ChangePlayerName(Guid gameId, string playerName)
+    {
+        var playernameRequest = new PlayerNameRequest
+        {
+            GameId = gameId,
+            Name = playerName,
+        };
+
+        var response = await _httpClient.PostAsJsonAsync("/playername", playernameRequest);
+        response.EnsureSuccessStatusCode(); // Throw if not successful
+        return await response.Content.ReadFromJsonAsync<PlayerNameRequest>();
+    }
+
 }

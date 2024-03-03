@@ -183,6 +183,11 @@ img {
     padding: 10px;
 }
 
+#little-text{
+    font-size: 16px;
+    text-align: center;
+}
+
 #difficulty-selector, #player-name-input{
     margin:auto;
     color: white;
