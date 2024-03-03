@@ -6,17 +6,21 @@ using Grpc.Core;
 
 public class BattleshipServiceImpl : BattleshipService.BattleshipServiceBase
 {
-    public Game ServiceGame { get; set; } = new Game(1);
+    private readonly Game _game;
 
+    public BattleshipServiceImpl(Game game)
+    {
+        _game = game;
+    }
     public override Task<NewGameResponseMessage> CreateNewGame(Empty request, ServerCallContext context)
     {
-        ServiceGame = new Game(1);
+        _game.RestartGame();
         var GameResponse = new NewGameResponseMessage
         {
-            GameId = ServiceGame.Id.ToString()
+            GameId = _game.Id.ToString()
         };
 
-        foreach (var ship in ServiceGame.PlayerGrid.Ships)
+        foreach (var ship in _game.PlayerGrid.Ships)
         {
             GameResponse.PlayerShips.Add(ConvertToShipMessage(ship));
         }
@@ -26,7 +30,7 @@ public class BattleshipServiceImpl : BattleshipService.BattleshipServiceBase
 
     public override Task<AttackResponseMessage> Attack(AttackRequestMessage request, ServerCallContext context)
     {
-        AttackResponse response = ServiceGame.PlayerAttackIA(request.X, request.Y);
+        AttackResponse response = _game.PlayerAttackIA(request.X, request.Y);
 
         AttackResponseMessage attackResponseMessage = new AttackResponseMessage
         {
@@ -67,7 +71,7 @@ public class BattleshipServiceImpl : BattleshipService.BattleshipServiceBase
         var shipMessage = new ShipMessage
         {
             Letter = ship.Letter,
-            Size = ship.Size.ToString(),
+            Size = ship.Size,
             Horizontal = ship.Horizontal,
             ImagePath = ship.ImagePath
         };
