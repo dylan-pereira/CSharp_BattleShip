@@ -29,7 +29,7 @@ Projet réalisé par LAMOINE Clément & PEREIRA Dylan | INFRES 14
 
 
 ## Features obligatoires
-L'ensemble des fonctionnalités attendues sont réalisés. Etape 1 -> 8
+L'ensemble des fonctionnalités attendues sont réalisés. Etape 1 -> 9
 
 
 
